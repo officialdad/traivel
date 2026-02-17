@@ -1,0 +1,22 @@
+{
+  "name": "traivel",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "migrate:local": "wrangler d1 execute traivel-db --local --file=migrations/0001_initial.sql",
+    "migrate:prod": "wrangler d1 execute traivel-db --file=migrations/0001_initial.sql"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "agents": "^0.0.74",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "typescript": "^5.7.0",
+    "wrangler": "^4.65.0"
+  }
+}

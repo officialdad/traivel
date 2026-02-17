@@ -1,0 +1,7 @@
+node_modules/
+.wrangler/
+.mcp.json
+.mcp.json.backup-*
+.claude.backup-*/
+.opencode/
+CLAUDE.md.backup-*

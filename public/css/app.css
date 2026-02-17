@@ -1,0 +1,472 @@
+/* =============================================
+   Traivel — Custom Styles (Pico CSS v2 overrides)
+   ============================================= */
+
+/* --- View transitions --- */
+main.container {
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Navigation --- */
+nav.app-nav {
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
+  padding: 0.6rem 0;
+  margin-bottom: 0;
+}
+
+nav.app-nav a {
+  color: var(--pico-primary-inverse);
+  text-decoration: none;
+}
+
+nav.app-nav .brand {
+  font-size: 1.2em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+nav.app-nav .brand i {
+  margin-right: 0.3em;
+}
+
+nav.app-nav [role="button"] {
+  --pico-color: var(--pico-primary-inverse);
+  --pico-border-color: var(--pico-primary-inverse);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85em;
+}
+
+/* --- Badges (shared base for status + category) --- */
+.badge {
+  padding: 0.15em 0.55em;
+  border-radius: 99px;
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  vertical-align: middle;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.badge i {
+  font-size: 0.85em;
+}
+
+/* --- Status badges --- */
+.badge[data-status="ai_recommended"] {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.badge[data-status="finalized"] {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge[data-status="modified"] {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+/* --- Category badges --- */
+.badge[data-cat="food"]          { background: #fff3e0; color: #e65100; }
+.badge[data-cat="sightseeing"]   { background: #e3f2fd; color: #1565c0; }
+.badge[data-cat="transport"]     { background: #f3e5f5; color: #7b1fa2; }
+.badge[data-cat="accommodation"] { background: #e8f5e9; color: #2e7d32; }
+.badge[data-cat="adventure"]     { background: #fce4ec; color: #c62828; }
+.badge[data-cat="shopping"]      { background: #fff8e1; color: #f57f17; }
+.badge[data-cat="culture"]       { background: #ede7f6; color: #4527a0; }
+.badge[data-cat="relaxation"]    { background: #e0f7fa; color: #00695c; }
+.badge[data-cat="nightlife"]     { background: #fce4ec; color: #880e4f; }
+.badge[data-cat="other"]         { background: var(--pico-secondary-background); color: var(--pico-secondary-inverse); }
+
+/* Dark mode badges */
+@media (prefers-color-scheme: dark) {
+  .badge[data-status="ai_recommended"] { background: #0d2137; color: #90caf9; }
+  .badge[data-status="finalized"]      { background: #1b3a1b; color: #a5d6a7; }
+  .badge[data-status="modified"]       { background: #4e2a04; color: #ffcc80; }
+
+  .badge[data-cat="food"]          { background: #4e2a04; color: #ffcc80; }
+  .badge[data-cat="sightseeing"]   { background: #0d2137; color: #90caf9; }
+  .badge[data-cat="transport"]     { background: #2a1233; color: #ce93d8; }
+  .badge[data-cat="accommodation"] { background: #1b3a1b; color: #a5d6a7; }
+  .badge[data-cat="adventure"]     { background: #3b0f0f; color: #ef9a9a; }
+  .badge[data-cat="shopping"]      { background: #3e2e00; color: #fff176; }
+  .badge[data-cat="culture"]       { background: #1a0e33; color: #b39ddb; }
+  .badge[data-cat="relaxation"]    { background: #0a2e2a; color: #80cbc4; }
+  .badge[data-cat="nightlife"]     { background: #33061a; color: #f48fb1; }
+}
+
+/* --- Itinerary card grid --- */
+.itinerary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.itinerary-grid article {
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  margin-bottom: 0;
+}
+
+.itinerary-grid article:hover,
+.itinerary-grid article:focus-within {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.itinerary-grid article header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  font-size: 0.85em;
+  color: var(--pico-muted-color);
+  margin-top: 0.25rem;
+}
+
+.card-meta span {
+  white-space: nowrap;
+}
+
+.card-meta i {
+  margin-right: 0.25em;
+  width: 1em;
+  text-align: center;
+}
+
+/* --- Activity cards --- */
+.activity-card {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.activity-card:hover {
+  border-color: var(--pico-primary-border);
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.activity-header .act-name {
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.activity-header .act-time {
+  font-size: 0.8em;
+  color: var(--pico-muted-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.activity-header .act-cost {
+  margin-left: auto;
+  font-weight: 600;
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.activity-badges {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.activity-card p {
+  margin-bottom: 0.25rem;
+  font-size: 0.9em;
+}
+
+/* --- Action buttons --- */
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.btn-group button,
+.btn-group a {
+  margin-bottom: 0;
+}
+
+.btn-group i {
+  margin-right: 0.3em;
+}
+
+.inline-actions {
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-left: 0.5rem;
+}
+
+.inline-actions a,
+.inline-actions button {
+  padding: 0.35em 0.7em;
+  font-size: 0.8em;
+  margin-bottom: 0;
+  min-height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+/* Delete buttons — visually distinct */
+.btn-delete {
+  --pico-color: #c62828;
+  --pico-border-color: #c62828;
+}
+
+.btn-delete:hover {
+  --pico-background-color: #c62828;
+  --pico-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-delete {
+    --pico-color: #ef9a9a;
+    --pico-border-color: #ef9a9a;
+  }
+
+  .btn-delete:hover {
+    --pico-background-color: #c62828;
+    --pico-color: #fff;
+  }
+}
+
+/* --- Meta grid (trip details) --- */
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.25rem 1.5rem;
+}
+
+.meta-grid dt {
+  font-weight: 600;
+  font-size: 0.8em;
+  color: var(--pico-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0;
+}
+
+.meta-grid dt i {
+  margin-right: 0.3em;
+  width: 1em;
+  text-align: center;
+}
+
+.meta-grid dd {
+  margin-left: 0;
+  margin-bottom: 0.75rem;
+}
+
+/* --- Forms fieldset grouping --- */
+fieldset {
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 8px;
+  padding: 1rem 1.25rem 0.25rem;
+  margin-bottom: 1rem;
+}
+
+fieldset legend {
+  font-weight: 600;
+  font-size: 0.9em;
+  padding: 0 0.5em;
+  color: var(--pico-muted-color);
+}
+
+fieldset legend i {
+  margin-right: 0.3em;
+}
+
+/* --- Link editor --- */
+.link-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.link-row input {
+  margin-bottom: 0;
+}
+
+/* --- Reference links --- */
+.ref-links {
+  margin-top: 0.25rem;
+}
+
+.ref-links a {
+  font-size: 0.8em;
+  display: inline-block;
+  margin-right: 0.75rem;
+  text-decoration: none;
+}
+
+.ref-links a i {
+  margin-right: 0.2em;
+}
+
+/* --- Cost totals --- */
+.cost-total {
+  font-weight: 600;
+  text-align: right;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--pico-muted-border-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.cost-total i {
+  margin-right: 0.3em;
+}
+
+/* --- Empty states --- */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--pico-muted-color);
+}
+
+.empty-state .empty-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* --- Day sections --- */
+details summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+details summary strong {
+  font-size: 1.05em;
+}
+
+details summary i.fa-calendar-day {
+  margin-right: 0.3em;
+  color: var(--pico-muted-color);
+}
+
+/* --- Toast notifications --- */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-left: 4px solid var(--pico-primary);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 0.9em;
+  animation: slideInToast 0.25s ease-out;
+  pointer-events: auto;
+  max-width: 320px;
+}
+
+.toast i {
+  margin-right: 0.4em;
+}
+
+.toast.toast-success { border-left-color: #2e7d32; }
+.toast.toast-error   { border-left-color: #c62828; }
+
+@keyframes slideInToast {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* --- Loading states --- */
+[aria-busy="true"] {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Mobile optimizations --- */
+@media (max-width: 576px) {
+  .itinerary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meta-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .btn-group {
+    flex-direction: column;
+  }
+
+  .btn-group a,
+  .btn-group button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .activity-header {
+    gap: 0.25rem;
+  }
+
+  .activity-header .act-cost {
+    margin-left: 0;
+  }
+
+  details summary {
+    font-size: 0.95em;
+  }
+
+  .link-row {
+    flex-direction: column;
+  }
+
+  .link-row input {
+    width: 100%;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .toast {
+    max-width: none;
+  }
+}
