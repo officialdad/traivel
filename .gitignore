@@ -3,5 +3,5 @@ node_modules/
 .mcp.json
 .mcp.json.backup-*
 .claude.backup-*/
-.opencode/
+.env
 CLAUDE.md.backup-*
