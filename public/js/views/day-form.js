@@ -72,6 +72,9 @@ export async function renderDayForm(container, itineraryId, dayId) {
 
   const tripTitle = itinerary ? esc(itinerary.title) : 'Trip';
 
+  const startDate = itinerary ? itinerary.start_date : null;
+  const endDate = itinerary ? itinerary.end_date : null;
+
   container.innerHTML = `
     <hgroup>
       <h2><i class="fa-solid fa-calendar-day"></i> ${isEdit ? 'Edit' : 'Add'} Day</h2>
@@ -84,11 +87,14 @@ export async function renderDayForm(container, itineraryId, dayId) {
       <fieldset>
         <legend><i class="fa-solid fa-calendar-day"></i> Day Info</legend>
         <div class="grid">
-          <label>Day Number *
-            <input type="number" name="day_number" min="1" required value="${dayNum}" />
+          <label>Date *
+            <input type="date" name="date" required value="${escAttr(dayDate)}"
+              ${startDate ? `min="${escAttr(startDate)}"` : ''}
+              ${endDate ? `max="${escAttr(endDate)}"` : ''} />
           </label>
-          <label>Date
-            <input type="date" name="date" value="${escAttr(dayDate)}" />
+          <label>Day Number
+            <input type="number" name="day_number" min="1" value="${dayNum}" readonly tabindex="-1" aria-label="Auto-calculated from date" />
+            <small>${startDate ? 'Auto-calculated from date' : 'Enter manually (no trip start date)'}</small>
           </label>
         </div>
         <label>Theme
@@ -122,34 +128,28 @@ export async function renderDayForm(container, itineraryId, dayId) {
     </form>
   `;
 
-  // Wire up day_number → auto-calculate date
+  // Wire up date → auto-calculate day_number
   const dayNumberInput = container.querySelector('input[name="day_number"]');
   const dateInput = container.querySelector('input[name="date"]');
 
-  if (!isEdit && itinerary) {
-    dayNumberInput.addEventListener('input', () => {
-      const num = parseInt(dayNumberInput.value);
-      if (!num || num < 1) return;
+  function calcDayNumber() {
+    if (!startDate || !dateInput.value) return;
+    const start = new Date(startDate + 'T00:00:00');
+    const picked = new Date(dateInput.value + 'T00:00:00');
+    const diff = Math.round((picked - start) / 86400000) + 1;
+    if (diff >= 1) {
+      dayNumberInput.value = diff;
+    }
+  }
 
-      // Find if a day with an earlier number has a date we can base off
-      const sortedDays = [...existingDays].sort((a, b) => (a.day_number || 0) - (b.day_number || 0));
-      let baseDate = null;
-      let baseDayNum = 0;
-
-      // Find the closest existing day before this number
-      for (const d of sortedDays) {
-        if (d.date && d.day_number < num) {
-          baseDate = d.date;
-          baseDayNum = d.day_number;
-        }
-      }
-
-      if (baseDate) {
-        dateInput.value = addDays(baseDate, num - baseDayNum);
-      } else if (itinerary.start_date) {
-        dateInput.value = addDays(itinerary.start_date, num - 1);
-      }
-    });
+  if (startDate) {
+    dateInput.addEventListener('input', calcDayNumber);
+    // Calculate on load if date is pre-filled
+    if (dateInput.value) calcDayNumber();
+  } else {
+    // No start_date — let user enter both manually
+    dayNumberInput.removeAttribute('readonly');
+    dayNumberInput.removeAttribute('tabindex');
   }
 
   const form = container.querySelector('#day-form');

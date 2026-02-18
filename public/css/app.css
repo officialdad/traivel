@@ -502,6 +502,13 @@ fieldset legend i {
   margin-right: 0.3em;
 }
 
+/* --- Readonly computed fields --- */
+input[readonly] {
+  opacity: 0.7;
+  cursor: default;
+  background: var(--pico-form-element-disabled-background-color, var(--pico-muted-border-color));
+}
+
 /* --- Link editor --- */
 .link-row {
   display: flex;
