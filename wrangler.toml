@@ -7,6 +7,10 @@ compatibility_flags = ["nodejs_compat"]
 directory = "public"
 binding = "ASSETS"
 
+routes = [
+  { pattern = "traivel.automasi.my", custom_domain = true }
+]
+
 [[d1_databases]]
 binding = "DB"
 database_name = "traivel-db"
