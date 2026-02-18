@@ -20,10 +20,13 @@ export async function renderItineraryList(container) {
     }
 
     container.innerHTML = `
-      <hgroup>
-        <h2><i class="fa-solid fa-suitcase-rolling"></i> Your Trips</h2>
-        <p>${itineraries.length} itinerar${itineraries.length !== 1 ? 'ies' : 'y'}</p>
-      </hgroup>
+      <div class="list-header">
+        <hgroup>
+          <h2><i class="fa-solid fa-suitcase-rolling"></i> Your Trips</h2>
+          <p>${itineraries.length} itinerar${itineraries.length !== 1 ? 'ies' : 'y'}</p>
+        </hgroup>
+        <a href="#/itineraries/new" role="button"><i class="fa-solid fa-plus"></i> New Trip</a>
+      </div>
       <div class="itinerary-grid"></div>
     `;
 

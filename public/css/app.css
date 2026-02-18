@@ -116,6 +116,25 @@ nav.app-nav [role="button"] {
   .tl-dot[data-cat="nightlife"] i     { background: #33061a; color: #f48fb1; }
 }
 
+/* --- List header (title + CTA) --- */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.list-header hgroup {
+  margin-bottom: 0;
+}
+
+.list-header a[role="button"] {
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
 /* --- Itinerary card grid --- */
 .itinerary-grid {
   display: grid;
@@ -133,6 +152,11 @@ nav.app-nav [role="button"] {
 .itinerary-grid article:focus-within {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transform: translateY(-2px);
+}
+
+.itinerary-grid article:focus-visible {
+  outline: 2px solid var(--pico-primary);
+  outline-offset: 2px;
 }
 
 .itinerary-grid article header {
@@ -385,7 +409,13 @@ nav.app-nav [role="button"] {
 
 /* Day section styling */
 .day-section {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.day-section:last-of-type {
+  border-bottom: none;
 }
 
 .day-theme {
@@ -550,6 +580,107 @@ input[readonly] {
   margin-right: 0.3em;
 }
 
+/* --- Budget summary --- */
+.budget-summary {
+  margin-top: 1.5rem;
+}
+
+.budget-summary table {
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0;
+}
+
+.budget-summary thead th {
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.budget-summary tbody td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.budget-summary tfoot {
+  border-top: 2px solid var(--pico-muted-border-color);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.myr-day, .myr-total {
+  color: var(--pico-muted-color);
+  white-space: nowrap;
+}
+
+.myr-loading {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid var(--pico-muted-border-color);
+  border-top-color: var(--pico-primary);
+  border-radius: 50%;
+  animation: myrSpin 0.6s linear infinite;
+  vertical-align: middle;
+}
+
+.myr-loading[aria-busy] {
+  min-height: auto;
+}
+
+@keyframes myrSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Markdown content --- */
+.md-content p {
+  margin-bottom: 0.35rem;
+}
+
+.md-content p:last-child {
+  margin-bottom: 0;
+}
+
+.md-content ul,
+.md-content ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.35rem;
+}
+
+.md-content code {
+  font-size: 0.88em;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  background: var(--pico-muted-border-color);
+}
+
+.md-content pre {
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
+}
+
+.md-content blockquote {
+  border-left: 3px solid var(--pico-primary);
+  padding-left: 0.75rem;
+  margin: 0.35rem 0;
+  color: var(--pico-muted-color);
+}
+
+.md-content h1, .md-content h2, .md-content h3,
+.md-content h4, .md-content h5, .md-content h6 {
+  font-size: 1em;
+  font-weight: 700;
+  margin: 0.5rem 0 0.25rem;
+}
+
+.tl-details .md-content {
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+
 /* --- Empty states --- */
 .empty-state {
   text-align: center;
@@ -618,7 +749,7 @@ details summary i.fa-calendar-day {
 }
 
 /* --- Loading states --- */
-[aria-busy="true"] {
+[aria-busy="true"]:not(.myr-loading) {
   min-height: 120px;
   display: flex;
   align-items: center;
@@ -687,6 +818,25 @@ details summary i.fa-calendar-day {
 
   .link-row input {
     width: 100%;
+  }
+
+  .list-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .list-header a[role="button"] {
+    width: 100%;
+    text-align: center;
+  }
+
+  .budget-summary {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .budget-summary table {
+    min-width: 320px;
   }
 
   .toast-container {

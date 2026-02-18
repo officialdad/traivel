@@ -120,7 +120,8 @@ export async function renderActivityForm(container, dayId, activityId) {
         </label>
 
         <label>Description
-          <textarea name="description" rows="2" placeholder="What you'll do...">${esc(v('description'))}</textarea>
+          <textarea name="description" rows="3" placeholder="What you'll do...">${esc(v('description'))}</textarea>
+          <small>Supports **bold**, *italic*, - lists, and [links](url)</small>
         </label>
 
         <div class="grid">
@@ -146,6 +147,7 @@ export async function renderActivityForm(container, dayId, activityId) {
 
         <label>Notes
           <textarea name="notes" rows="2" placeholder="Tips, warnings, booking info...">${esc(v('notes'))}</textarea>
+          <small>Supports markdown formatting</small>
         </label>
       </fieldset>
 

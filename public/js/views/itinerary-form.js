@@ -69,7 +69,10 @@ export async function renderItineraryForm(container, itineraryId) {
         </div>
         <div class="grid">
           <label>Currency
-            <input name="currency" value="${escAttr(v('currency'))}" placeholder="e.g. JPY" />
+            <select name="currency">
+              <option value="">— Select —</option>
+              ${['MYR','USD','JPY','EUR','GBP','SGD','THB','AUD','KRW','CNY','TWD','IDR','PHP','INR','AED','CHF','HKD','NZD','CAD','VND'].map(c => `<option value="${c}"${v('currency') === c ? ' selected' : ''}>${c}</option>`).join('')}
+            </select>
           </label>
           <label>Language
             <input name="language" value="${escAttr(v('language'))}" placeholder="e.g. Japanese" />

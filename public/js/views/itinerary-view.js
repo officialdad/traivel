@@ -1,6 +1,8 @@
 import { api } from '../api.js';
 import { statusBadgeHTML } from '../components/status-badge.js';
 import { showToast } from '../components/toast.js';
+import { getCurrencySymbol, normalizeCurrencyCode, getExchangeRate, convertToMYR, formatMYR, formatNumber } from '../currency.js';
+import { renderMarkdown } from '../markdown.js';
 
 const CAT_ICONS = {
   food: 'fa-utensils',
@@ -20,6 +22,10 @@ export async function renderItineraryView(container, itineraryId) {
 
   try {
     const it = await api.getItinerary(itineraryId);
+
+    const currCode = normalizeCurrencyCode(it.currency);
+    const currSymbol = getCurrencySymbol(currCode);
+    const isMYR = currCode === 'MYR';
 
     const dates = it.start_date && it.end_date
       ? `${formatDate(it.start_date)} – ${formatDate(it.end_date)}`
@@ -45,7 +51,7 @@ export async function renderItineraryView(container, itineraryId) {
           ${metaItem('fa-clock', 'Duration', it.duration_days ? `${it.duration_days} days` : null)}
           ${metaItem('fa-users', 'Travelers', it.pax)}
           ${metaItem('fa-hotel', 'Stay', it.place_of_stay)}
-          ${metaItem('fa-money-bill', 'Currency', it.currency)}
+          ${metaItem('fa-money-bill', 'Currency', currCode ? `${currCode} (${currSymbol})` : null)}
           ${metaItem('fa-language', 'Language', it.language)}
         </dl>
       </article>
@@ -104,7 +110,7 @@ export async function renderItineraryView(container, itineraryId) {
 
         const sorted = [...day.activities].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
         for (const act of sorted) {
-          const cost = act.estimated_cost ? `${it.currency || '$'}${act.estimated_cost.toFixed(2)}` : '';
+          const cost = act.estimated_cost ? `${currSymbol}${formatNumber(act.estimated_cost)}` : '';
           const links = (act.reference_links || [])
             .map((l) => `<a href="${escAttr(l.url)}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${esc(l.title || l.url)}</a>`)
             .join('');
@@ -129,8 +135,8 @@ export async function renderItineraryView(container, itineraryId) {
                   </div>
                 </div>
                 <div class="tl-details">
-                  ${act.description ? `<p class="tl-desc">${esc(act.description)}</p>` : ''}
-                  ${act.notes ? `<p class="tl-notes"><i class="fa-solid fa-sticky-note"></i> ${esc(act.notes)}</p>` : ''}
+                  ${act.description ? `<div class="tl-desc md-content">${renderMarkdown(act.description)}</div>` : ''}
+                  ${act.notes ? `<p class="tl-notes"><i class="fa-solid fa-sticky-note"></i> <span class="md-content">${renderMarkdown(act.notes)}</span></p>` : ''}
                   ${act.justification ? `<p class="tl-notes"><i class="fa-solid fa-robot"></i> ${esc(act.justification)}</p>` : ''}
                   ${links ? `<div class="ref-links">${links}</div>` : ''}
                   <span class="inline-actions">
@@ -147,7 +153,7 @@ export async function renderItineraryView(container, itineraryId) {
       }
 
       if (dayCost > 0) {
-        html += `<div class="cost-total"><i class="fa-solid fa-calculator"></i> Day total: ${it.currency || '$'}${dayCost.toFixed(2)}</div>`;
+        html += `<div class="cost-total"><i class="fa-solid fa-calculator"></i> Day total: ${currSymbol}${formatNumber(dayCost)}</div>`;
       }
 
       html += `</details>`;
@@ -155,16 +161,67 @@ export async function renderItineraryView(container, itineraryId) {
 
     html += `<a href="#/itineraries/${it.id}/days/new" role="button" class="outline" style="margin-top:1rem"><i class="fa-solid fa-plus"></i> Add Day</a>`;
 
-    // Total cost
+    // Budget summary
     const totalCost = it.days.reduce(
       (sum, d) => sum + d.activities.reduce((s, a) => s + (a.estimated_cost || 0), 0),
       0
     );
     if (totalCost > 0) {
-      html += `<p class="cost-total" style="margin-top:1rem;font-size:1.1em"><i class="fa-solid fa-wallet"></i> Trip total: ${it.currency || '$'}${totalCost.toFixed(2)}</p>`;
+      const showMYR = !isMYR && currCode;
+      html += `
+        <article class="budget-summary">
+          <header><strong><i class="fa-solid fa-wallet"></i> Budget Summary</strong></header>
+          <table>
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Theme</th>
+                <th class="text-right">${currCode || 'Cost'}</th>
+                ${showMYR ? '<th class="text-right">MYR</th>' : ''}
+              </tr>
+            </thead>
+            <tbody>
+              ${it.days.map(d => {
+                const dc = d.activities.reduce((s, a) => s + (a.estimated_cost || 0), 0);
+                if (dc <= 0) return '';
+                return `<tr>
+                  <td>Day ${d.day_number}</td>
+                  <td>${esc(d.theme || '')}</td>
+                  <td class="text-right">${currSymbol}${formatNumber(dc)}</td>
+                  ${showMYR ? `<td class="text-right myr-day" data-amount="${dc}"><span class="myr-loading" aria-busy="true"></span></td>` : ''}
+                </tr>`;
+              }).join('')}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2"><strong>Total</strong></td>
+                <td class="text-right"><strong>${currSymbol}${formatNumber(totalCost)}</strong></td>
+                ${showMYR ? `<td class="text-right myr-total" data-amount="${totalCost}"><span class="myr-loading" aria-busy="true"></span></td>` : ''}
+              </tr>
+            </tfoot>
+          </table>
+        </article>`;
     }
 
     container.innerHTML = html;
+
+    // Async MYR conversion
+    if (!isMYR && currCode) {
+      getExchangeRate(currCode).then(rate => {
+        if (!rate) {
+          container.querySelectorAll('.myr-day, .myr-total').forEach(el => { el.textContent = '—'; });
+          return;
+        }
+        container.querySelectorAll('.myr-day').forEach(el => {
+          const amt = parseFloat(el.dataset.amount);
+          el.textContent = formatMYR(convertToMYR(amt, rate));
+        });
+        container.querySelectorAll('.myr-total').forEach(el => {
+          const amt = parseFloat(el.dataset.amount);
+          el.innerHTML = `<strong>${formatMYR(convertToMYR(amt, rate))}</strong>`;
+        });
+      });
+    }
 
     // Expand/collapse click handlers
     container.querySelectorAll('.tl-expandable').forEach((item) => {
