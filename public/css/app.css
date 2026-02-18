@@ -104,6 +104,16 @@ nav.app-nav [role="button"] {
   .badge[data-cat="culture"]       { background: #1a0e33; color: #b39ddb; }
   .badge[data-cat="relaxation"]    { background: #0a2e2a; color: #80cbc4; }
   .badge[data-cat="nightlife"]     { background: #33061a; color: #f48fb1; }
+
+  .tl-dot[data-cat="food"] i          { background: #4e2a04; color: #ffcc80; }
+  .tl-dot[data-cat="sightseeing"] i   { background: #0d2137; color: #90caf9; }
+  .tl-dot[data-cat="transport"] i     { background: #2a1233; color: #ce93d8; }
+  .tl-dot[data-cat="accommodation"] i { background: #1b3a1b; color: #a5d6a7; }
+  .tl-dot[data-cat="adventure"] i     { background: #3b0f0f; color: #ef9a9a; }
+  .tl-dot[data-cat="shopping"] i      { background: #3e2e00; color: #fff176; }
+  .tl-dot[data-cat="culture"] i       { background: #1a0e33; color: #b39ddb; }
+  .tl-dot[data-cat="relaxation"] i    { background: #0a2e2a; color: #80cbc4; }
+  .tl-dot[data-cat="nightlife"] i     { background: #33061a; color: #f48fb1; }
 }
 
 /* --- Itinerary card grid --- */
@@ -151,55 +161,242 @@ nav.app-nav [role="button"] {
   text-align: center;
 }
 
-/* --- Activity cards --- */
-.activity-card {
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.75rem;
-  border: 1px solid var(--pico-muted-border-color);
-  border-radius: 8px;
-  transition: border-color 0.15s ease;
+/* --- Vertical Timeline --- */
+.timeline {
+  position: relative;
+  padding: 0.5rem 0;
 }
 
-.activity-card:hover {
-  border-color: var(--pico-primary-border);
+.tl-item {
+  display: grid;
+  grid-template-columns: 3.2rem 1.8rem 1fr;
+  gap: 0 0.4rem;
+  position: relative;
+  padding-bottom: 0.25rem;
 }
 
-.activity-header {
+/* Time column */
+.tl-time {
+  font-size: 0.75em;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+  text-align: right;
+  padding-top: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Dot + rail column */
+.tl-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.tl-dot i {
+  width: 1.8rem;
+  height: 1.8rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.7em;
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+  background: var(--pico-muted-border-color);
+  color: var(--pico-color);
+}
+
+/* Category-colored timeline dots */
+.tl-dot[data-cat="food"] i          { background: #fff3e0; color: #e65100; }
+.tl-dot[data-cat="sightseeing"] i   { background: #e3f2fd; color: #1565c0; }
+.tl-dot[data-cat="transport"] i     { background: #f3e5f5; color: #7b1fa2; }
+.tl-dot[data-cat="accommodation"] i { background: #e8f5e9; color: #2e7d32; }
+.tl-dot[data-cat="adventure"] i     { background: #fce4ec; color: #c62828; }
+.tl-dot[data-cat="shopping"] i      { background: #fff8e1; color: #f57f17; }
+.tl-dot[data-cat="culture"] i       { background: #ede7f6; color: #4527a0; }
+.tl-dot[data-cat="relaxation"] i    { background: #e0f7fa; color: #00695c; }
+.tl-dot[data-cat="nightlife"] i     { background: #fce4ec; color: #880e4f; }
+.tl-dot[data-cat="other"] i         { background: var(--pico-secondary-background); color: var(--pico-secondary-inverse); }
+
+/* Vertical connecting line */
+.tl-item:not(:last-child) .tl-dot::after {
+  content: '';
+  width: 2px;
+  flex-grow: 1;
+  background: var(--pico-muted-border-color);
+  margin-top: 0.2rem;
+}
+
+/* Content column */
+.tl-content {
+  padding: 0.35rem 0 0.75rem 0.5rem;
+  min-width: 0;
+}
+
+/* Preview (always visible) */
+.tl-preview {
+  cursor: default;
+}
+
+.tl-expandable .tl-preview {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0.25rem 0.4rem;
+  margin: -0.25rem -0.4rem;
+  transition: background-color 0.15s ease;
+}
+
+.tl-expandable .tl-preview:hover {
+  background: var(--pico-muted-border-color);
+}
+
+.tl-expandable .tl-preview:active {
+  background: var(--pico-secondary-focus);
+}
+
+.tl-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 0.25rem;
 }
 
-.activity-header .act-name {
+.tl-name {
   font-weight: 600;
-  font-size: 1em;
+  font-size: 0.95em;
+  line-height: 1.3;
 }
 
-.activity-header .act-time {
-  font-size: 0.8em;
-  color: var(--pico-muted-color);
-  font-variant-numeric: tabular-nums;
-}
-
-.activity-header .act-cost {
+.tl-cost {
   margin-left: auto;
   font-weight: 600;
-  font-size: 0.9em;
+  font-size: 0.85em;
+  color: var(--pico-muted-color);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
+.tl-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+}
+
+.tl-slot {
+  font-size: 0.75em;
+  color: var(--pico-muted-color);
+  font-variant-numeric: tabular-nums;
+}
+
 .activity-badges {
   display: inline-flex;
-  gap: 0.3rem;
+  gap: 0.25rem;
   align-items: center;
 }
 
-.activity-card p {
+.tl-expand-icon {
+  font-size: 0.7em;
+  color: var(--pico-muted-color);
+  transition: transform 0.2s ease;
+  margin-left: 0.25rem;
+}
+
+.tl-open .tl-expand-icon {
+  transform: rotate(180deg);
+}
+
+/* Details (hidden by default, shown on expand) */
+.tl-details {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 3px solid var(--pico-muted-border-color);
+  animation: tlExpand 0.2s ease-out;
+}
+
+.tl-open .tl-details {
+  display: block;
+}
+
+@keyframes tlExpand {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tl-desc {
+  font-size: 0.88em;
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+  color: var(--pico-color);
+}
+
+.tl-notes {
+  font-size: 0.8em;
+  color: var(--pico-muted-color);
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+
+.tl-notes i {
+  margin-right: 0.3em;
+  width: 1em;
+  text-align: center;
+}
+
+.tl-details .ref-links {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tl-details .ref-links a {
+  display: inline-block;
+  margin-right: 0;
+}
+
+.tl-details .inline-actions {
+  margin-top: 0.4rem;
+  margin-left: 0;
+}
+
+/* Timeline controls */
+.tl-controls {
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 0.25rem;
-  font-size: 0.9em;
+}
+
+.tl-toggle-all {
+  font-size: 0.75em;
+  padding: 0.25em 0.6em;
+  margin-bottom: 0;
+}
+
+.tl-toggle-all i {
+  margin-right: 0.25em;
+}
+
+/* Day section styling */
+.day-section {
+  margin-bottom: 0.5rem;
+}
+
+.day-theme {
+  color: var(--pico-muted-color);
+  font-style: italic;
+}
+
+.day-justification {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--pico-muted-color);
 }
 
 /* --- Action buttons --- */
@@ -441,16 +638,40 @@ details summary i.fa-calendar-day {
     text-align: center;
   }
 
-  .activity-header {
-    gap: 0.25rem;
+  .tl-item {
+    grid-template-columns: 2.5rem 1.5rem 1fr;
   }
 
-  .activity-header .act-cost {
-    margin-left: 0;
+  .tl-time {
+    font-size: 0.68em;
+  }
+
+  .tl-dot i {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.6em;
+  }
+
+  .tl-name {
+    font-size: 0.88em;
+  }
+
+  .tl-cost {
+    font-size: 0.8em;
+  }
+
+  .tl-content {
+    padding-left: 0.35rem;
   }
 
   details summary {
     font-size: 0.95em;
+  }
+
+  details summary .inline-actions {
+    flex-basis: 100%;
+    margin-left: 0;
+    margin-top: 0.3rem;
   }
 
   .link-row {
