@@ -114,6 +114,16 @@ nav.app-nav [role="button"] {
   .tl-dot[data-cat="culture"] i       { background: #1a0e33; color: #b39ddb; }
   .tl-dot[data-cat="relaxation"] i    { background: #0a2e2a; color: #80cbc4; }
   .tl-dot[data-cat="nightlife"] i     { background: #33061a; color: #f48fb1; }
+
+  .tl-time {
+    color: var(--pico-color);
+    opacity: 0.7;
+  }
+
+  .tl-cost {
+    color: var(--pico-color);
+    opacity: 0.7;
+  }
 }
 
 /* --- List header (title + CTA) --- */
