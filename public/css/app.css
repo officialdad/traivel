@@ -115,17 +115,6 @@ nav.app-nav [role="button"] {
   .tl-dot[data-cat="relaxation"] i    { background: #0a2e2a; color: #80cbc4; }
   .tl-dot[data-cat="nightlife"] i     { background: #33061a; color: #f48fb1; }
 
-  .tl-time {
-    color: #b0bec5;
-  }
-
-  .tl-cost {
-    color: #b0bec5;
-  }
-
-  .tl-slot {
-    color: #b0bec5;
-  }
 }
 
 /* --- List header (title + CTA) --- */
@@ -327,6 +316,15 @@ nav.app-nav [role="button"] {
   font-size: 0.75em;
   color: var(--pico-muted-color);
   font-variant-numeric: tabular-nums;
+}
+
+/* Dark mode: boost contrast for timeline text */
+@media (prefers-color-scheme: dark) {
+  .tl-time,
+  .tl-cost,
+  .tl-slot {
+    color: #b0bec5;
+  }
 }
 
 .activity-badges {
