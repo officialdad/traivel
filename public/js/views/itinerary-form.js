@@ -151,6 +151,7 @@ export async function renderItineraryForm(container, itineraryId) {
     e.preventDefault();
     const btn = form.querySelector('button[type="submit"]');
     btn.setAttribute('aria-busy', 'true');
+    btn.disabled = true;
 
     const fd = new FormData(form);
     const data = {};
@@ -176,6 +177,7 @@ export async function renderItineraryForm(container, itineraryId) {
       }
     } catch (err) {
       btn.removeAttribute('aria-busy');
+      btn.disabled = false;
       showToast('Error: ' + err.message, 'error');
     }
   });

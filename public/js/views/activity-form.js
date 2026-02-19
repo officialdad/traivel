@@ -78,7 +78,7 @@ export async function renderActivityForm(container, dayId, activityId) {
   const displayStartTime = startTime || suggestedStartTime;
 
   const catOptions = CATEGORIES.map(
-    (c) => `<option value="${c}" ${v('category') === c ? 'selected' : ''}><i class="fa-solid ${CAT_ICONS[c]}"></i> ${c}</option>`
+    (c) => `<option value="${c}" ${v('category') === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
   ).join('');
 
   // Build existing activities summary for context
@@ -197,6 +197,7 @@ export async function renderActivityForm(container, dayId, activityId) {
     const addAnother = submitter && submitter.name === 'add_another';
     const btn = submitter || form.querySelector('button[type="submit"]');
     btn.setAttribute('aria-busy', 'true');
+    btn.disabled = true;
 
     const fd = new FormData(form);
     const data = {};
@@ -246,6 +247,7 @@ export async function renderActivityForm(container, dayId, activityId) {
       }
     } catch (err) {
       btn.removeAttribute('aria-busy');
+      btn.disabled = false;
       showToast('Error: ' + err.message, 'error');
     }
   });

@@ -30,9 +30,6 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
-      - name: Set production D1 database ID
-        run: sed -i 's/database_id = "local"/database_id = "${{ secrets.D1_DATABASE_ID }}"/' wrangler.toml
-
       - name: Apply D1 Migrations
         uses: cloudflare/wrangler-action@v3
         with:

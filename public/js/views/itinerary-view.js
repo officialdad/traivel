@@ -230,9 +230,20 @@ export async function renderItineraryView(container, itineraryId) {
     // Expand/collapse click handlers
     container.querySelectorAll('.tl-expandable').forEach((item) => {
       const preview = item.querySelector('.tl-preview');
+      preview.setAttribute('role', 'button');
+      preview.setAttribute('aria-expanded', 'false');
+      preview.setAttribute('tabindex', '0');
       preview.addEventListener('click', (e) => {
         if (e.target.closest('a, button')) return;
         item.classList.toggle('tl-open');
+        preview.setAttribute('aria-expanded', item.classList.contains('tl-open'));
+      });
+      preview.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          item.classList.toggle('tl-open');
+          preview.setAttribute('aria-expanded', item.classList.contains('tl-open'));
+        }
       });
     });
 

@@ -45,7 +45,7 @@ export async function renderItineraryList(container) {
           <strong>${escapeHTML(it.title)}</strong>
           ${statusBadgeHTML(it.ai_status)}
         </header>
-        <p><i class="fa-solid fa-location-dot"></i> ${escapeHTML(it.destination_country)}</p>
+        <p><i class="fa-solid fa-location-dot"></i> ${escapeHTML([it.destination_city, it.destination_country].filter(Boolean).join(', '))}</p>
         <div class="card-meta">
           <span><i class="fa-regular fa-calendar"></i>${dates}</span>
           <span><i class="fa-solid fa-users"></i>${it.pax || 1} traveler${(it.pax || 1) !== 1 ? 's' : ''}</span>
@@ -76,5 +76,5 @@ function escapeHTML(str) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }

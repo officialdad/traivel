@@ -159,6 +159,7 @@ export async function renderDayForm(container, itineraryId, dayId) {
     const addAnother = submitter && submitter.name === 'add_another';
     const btn = submitter || form.querySelector('button[type="submit"]');
     btn.setAttribute('aria-busy', 'true');
+    btn.disabled = true;
 
     const fd = new FormData(form);
     const data = {};
@@ -182,7 +183,6 @@ export async function renderDayForm(container, itineraryId, dayId) {
         showToast(`Day ${data.day_number} added`);
 
         if (addAnother) {
-          // Re-render the form with updated context for next day
           renderDayForm(container, itineraryId, null);
         } else {
           window.location.hash = `#/itineraries/${itineraryId}`;
@@ -190,6 +190,7 @@ export async function renderDayForm(container, itineraryId, dayId) {
       }
     } catch (err) {
       btn.removeAttribute('aria-busy');
+      btn.disabled = false;
       showToast('Error: ' + err.message, 'error');
     }
   });
