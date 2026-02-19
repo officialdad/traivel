@@ -116,13 +116,15 @@ nav.app-nav [role="button"] {
   .tl-dot[data-cat="nightlife"] i     { background: #33061a; color: #f48fb1; }
 
   .tl-time {
-    color: var(--pico-color);
-    opacity: 0.7;
+    color: #b0bec5;
   }
 
   .tl-cost {
-    color: var(--pico-color);
-    opacity: 0.7;
+    color: #b0bec5;
+  }
+
+  .tl-slot {
+    color: #b0bec5;
   }
 }
 
