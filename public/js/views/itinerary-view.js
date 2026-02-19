@@ -46,13 +46,11 @@ export async function renderItineraryView(container, itineraryId) {
       <article>
         <header><strong><i class="fa-solid fa-circle-info"></i> Trip Details</strong></header>
         <dl class="meta-grid">
-          ${metaItem('fa-plane-departure', 'Origin', [it.origin_city, it.origin_country].filter(Boolean).join(', '))}
-          ${metaItem('fa-location-dot', 'Destination', it.destination_country)}
+          ${metaItem('fa-plane-departure', 'Origin', buildLocationString(it.origin_city, it.origin_country, it.origin_currency, it.origin_language))}
+          ${metaItem('fa-location-dot', 'Destination', buildLocationString(it.destination_city, it.destination_country, currCode, it.language))}
           ${metaItem('fa-clock', 'Duration', it.duration_days ? `${it.duration_days} days` : null)}
           ${metaItem('fa-users', 'Travelers', it.pax)}
           ${metaItem('fa-hotel', 'Stay', it.place_of_stay)}
-          ${metaItem('fa-money-bill', 'Currency', currCode ? `${currCode} (${currSymbol})` : null)}
-          ${metaItem('fa-language', 'Language', it.language)}
         </dl>
       </article>
     `;
@@ -82,7 +80,7 @@ export async function renderItineraryView(container, itineraryId) {
     }
 
     for (const day of it.days) {
-      const dayDate = day.date ? ` (${formatDate(day.date)})` : '';
+      const dayDate = day.date ? ` (${formatDateShort(day.date)})` : '';
       const dayCost = day.activities.reduce((sum, a) => sum + (a.estimated_cost || 0), 0);
 
       html += `
@@ -93,8 +91,8 @@ export async function renderItineraryView(container, itineraryId) {
             ${day.theme ? `<span class="day-theme">&mdash; ${esc(day.theme)}</span>` : ''}
             ${statusBadgeHTML(day.ai_status)}
             <span class="inline-actions">
-              <a href="#/days/${day.id}/activities/new" role="button" class="outline"><i class="fa-solid fa-plus"></i> Activity</a>
-              <a href="#/days/${day.id}/edit" role="button" class="outline secondary"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+              <a href="#/days/${day.id}/activities/new" role="button" class="outline btn-add"><i class="fa-solid fa-plus"></i> Activity</a>
+              <a href="#/days/${day.id}/edit" role="button" class="outline"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
               <button class="outline btn-delete" data-delete-day="${day.id}"><i class="fa-solid fa-trash-can"></i> Delete</button>
             </span>
           </summary>
@@ -140,7 +138,7 @@ export async function renderItineraryView(container, itineraryId) {
                   ${act.justification ? `<p class="tl-notes"><i class="fa-solid fa-robot"></i> ${esc(act.justification)}</p>` : ''}
                   ${links ? `<div class="ref-links">${links}</div>` : ''}
                   <span class="inline-actions">
-                    <a href="#/activities/${act.id}/edit" role="button" class="outline secondary"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                    <a href="#/activities/${act.id}/edit" role="button" class="outline"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
                     <button class="outline btn-delete" data-delete-activity="${act.id}"><i class="fa-solid fa-trash-can"></i> Delete</button>
                   </span>
                 </div>
@@ -153,13 +151,14 @@ export async function renderItineraryView(container, itineraryId) {
       }
 
       if (dayCost > 0) {
-        html += `<div class="cost-total"><i class="fa-solid fa-calculator"></i> Day total: ${currSymbol}${formatNumber(dayCost)}</div>`;
+        const showDayMYR = !isMYR && currCode;
+        html += `<div class="cost-total"><i class="fa-solid fa-calculator"></i> Day total: ${currSymbol}${formatNumber(dayCost)}${showDayMYR ? `<span class="myr-day-inline" data-amount="${dayCost}"></span>` : ''}</div>`;
       }
 
       html += `</details>`;
     }
 
-    html += `<a href="#/itineraries/${it.id}/days/new" role="button" class="outline" style="margin-top:1rem"><i class="fa-solid fa-plus"></i> Add Day</a>`;
+    html += `<a href="#/itineraries/${it.id}/days/new" role="button" class="outline btn-add" style="margin-top:1rem"><i class="fa-solid fa-plus"></i> Add Day</a>`;
 
     // Budget summary
     const totalCost = it.days.reduce(
@@ -210,6 +209,7 @@ export async function renderItineraryView(container, itineraryId) {
       getExchangeRate(currCode).then(rate => {
         if (!rate) {
           container.querySelectorAll('.myr-day, .myr-total').forEach(el => { el.textContent = '—'; });
+          container.querySelectorAll('.myr-day-inline').forEach(el => { el.textContent = ''; });
           return;
         }
         container.querySelectorAll('.myr-day').forEach(el => {
@@ -219,6 +219,10 @@ export async function renderItineraryView(container, itineraryId) {
         container.querySelectorAll('.myr-total').forEach(el => {
           const amt = parseFloat(el.dataset.amount);
           el.innerHTML = `<strong>${formatMYR(convertToMYR(amt, rate))}</strong>`;
+        });
+        container.querySelectorAll('.myr-day-inline').forEach(el => {
+          const amt = parseFloat(el.dataset.amount);
+          el.textContent = `(~${formatMYR(convertToMYR(amt, rate))})`;
         });
       });
     }
@@ -313,7 +317,23 @@ function metaItem(icon, label, value) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatDateShort(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+function buildLocationString(city, country, currency, language) {
+  const place = [city, country].filter(Boolean).join(', ');
+  if (!place) return null;
+  const details = [currency, language].filter(Boolean);
+  if (details.length > 0) {
+    return `${place} (${details.join(', ')})`;
+  }
+  return place;
 }
 
 function extractStartTime(timeSlot) {

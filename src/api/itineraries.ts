@@ -33,8 +33,9 @@ export async function createItinerary(
     .prepare(
       `INSERT INTO itineraries (id, title, destination_country, origin_country, origin_city,
         start_date, end_date, duration_days, pax, place_of_stay, currency, language,
-        culture_notes, religion_notes, weather_notes, ai_status, justification)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        culture_notes, religion_notes, weather_notes, destination_city, origin_currency,
+        origin_language, ai_status, justification)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .bind(
       id,
@@ -52,6 +53,9 @@ export async function createItinerary(
       body.culture_notes ?? null,
       body.religion_notes ?? null,
       body.weather_notes ?? null,
+      body.destination_city ?? null,
+      body.origin_currency ?? null,
+      body.origin_language ?? null,
       body.ai_status ?? 'ai_recommended',
       body.justification ?? null
     )
@@ -92,6 +96,7 @@ export async function updateItinerary(
         title = ?, destination_country = ?, origin_country = ?, origin_city = ?,
         start_date = ?, end_date = ?, duration_days = ?, pax = ?, place_of_stay = ?,
         currency = ?, language = ?, culture_notes = ?, religion_notes = ?, weather_notes = ?,
+        destination_city = ?, origin_currency = ?, origin_language = ?,
         ai_status = ?, justification = ?, updated_at = datetime('now')
        WHERE id = ?`
     )
@@ -110,6 +115,9 @@ export async function updateItinerary(
       body.culture_notes ?? existing.culture_notes,
       body.religion_notes ?? existing.religion_notes,
       body.weather_notes ?? existing.weather_notes,
+      body.destination_city ?? existing.destination_city,
+      body.origin_currency ?? existing.origin_currency,
+      body.origin_language ?? existing.origin_language,
       body.ai_status ?? existing.ai_status,
       body.justification ?? existing.justification,
       id
@@ -154,8 +162,9 @@ export async function createFullItinerary(
       .prepare(
         `INSERT INTO itineraries (id, title, destination_country, origin_country, origin_city,
           start_date, end_date, duration_days, pax, place_of_stay, currency, language,
-          culture_notes, religion_notes, weather_notes, ai_status, justification)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          culture_notes, religion_notes, weather_notes, destination_city, origin_currency,
+          origin_language, ai_status, justification)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .bind(
         itineraryId,
@@ -173,6 +182,9 @@ export async function createFullItinerary(
         body.culture_notes ?? null,
         body.religion_notes ?? null,
         body.weather_notes ?? null,
+        body.destination_city ?? null,
+        body.origin_currency ?? null,
+        body.origin_language ?? null,
         body.ai_status ?? 'ai_recommended',
         body.justification ?? null
       )

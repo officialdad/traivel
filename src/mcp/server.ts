@@ -62,6 +62,9 @@ export function createMcpServer(db: D1Database): McpServer {
       culture_notes: z.string().optional().describe('Cultural considerations'),
       religion_notes: z.string().optional().describe('Religious considerations'),
       weather_notes: z.string().optional().describe('Weather/climate notes'),
+      destination_city: z.string().optional().describe('Destination city'),
+      origin_currency: z.string().optional().describe('Origin currency code'),
+      origin_language: z.string().optional().describe('Origin language'),
       ai_status: z.enum(['ai_recommended', 'finalized', 'modified']).optional(),
       justification: z.string().optional(),
       days: z.array(z.object({
@@ -98,8 +101,9 @@ export function createMcpServer(db: D1Database): McpServer {
         db.prepare(
           `INSERT INTO itineraries (id, title, destination_country, origin_country, origin_city,
             start_date, end_date, duration_days, pax, place_of_stay, currency, language,
-            culture_notes, religion_notes, weather_notes, ai_status, justification)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            culture_notes, religion_notes, weather_notes, destination_city, origin_currency,
+            origin_language, ai_status, justification)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         ).bind(
           itineraryId, input.title, input.destination_country,
           input.origin_country ?? null, input.origin_city ?? null,
@@ -108,6 +112,8 @@ export function createMcpServer(db: D1Database): McpServer {
           input.place_of_stay ?? null, input.currency ?? null,
           input.language ?? null, input.culture_notes ?? null,
           input.religion_notes ?? null, input.weather_notes ?? null,
+          input.destination_city ?? null, input.origin_currency ?? null,
+          input.origin_language ?? null,
           input.ai_status ?? 'ai_recommended', input.justification ?? null
         )
       );
@@ -170,6 +176,9 @@ export function createMcpServer(db: D1Database): McpServer {
       culture_notes: z.string().optional(),
       religion_notes: z.string().optional(),
       weather_notes: z.string().optional(),
+      destination_city: z.string().optional(),
+      origin_currency: z.string().optional(),
+      origin_language: z.string().optional(),
       ai_status: z.enum(['ai_recommended', 'finalized', 'modified']).optional(),
       justification: z.string().optional(),
     },
@@ -180,7 +189,8 @@ export function createMcpServer(db: D1Database): McpServer {
       await db.prepare(
         `UPDATE itineraries SET title=?, destination_country=?, origin_country=?, origin_city=?,
          start_date=?, end_date=?, duration_days=?, pax=?, place_of_stay=?, currency=?, language=?,
-         culture_notes=?, religion_notes=?, weather_notes=?, ai_status=?, justification=?,
+         culture_notes=?, religion_notes=?, weather_notes=?, destination_city=?, origin_currency=?,
+         origin_language=?, ai_status=?, justification=?,
          updated_at=datetime('now') WHERE id=?`
       ).bind(
         updates.title ?? existing.title, updates.destination_country ?? existing.destination_country,
@@ -190,6 +200,8 @@ export function createMcpServer(db: D1Database): McpServer {
         updates.place_of_stay ?? existing.place_of_stay, updates.currency ?? existing.currency,
         updates.language ?? existing.language, updates.culture_notes ?? existing.culture_notes,
         updates.religion_notes ?? existing.religion_notes, updates.weather_notes ?? existing.weather_notes,
+        updates.destination_city ?? existing.destination_city, updates.origin_currency ?? existing.origin_currency,
+        updates.origin_language ?? existing.origin_language,
         updates.ai_status ?? existing.ai_status, updates.justification ?? existing.justification, id
       ).run();
 

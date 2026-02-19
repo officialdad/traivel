@@ -38,6 +38,9 @@ export interface ItineraryRow {
   culture_notes: string | null;
   religion_notes: string | null;
   weather_notes: string | null;
+  destination_city: string | null;
+  origin_currency: string | null;
+  origin_language: string | null;
   ai_status: AiStatus;
   justification: string | null;
   created_at: string;
@@ -100,6 +103,9 @@ export interface CreateItineraryInput {
   culture_notes?: string;
   religion_notes?: string;
   weather_notes?: string;
+  destination_city?: string;
+  origin_currency?: string;
+  origin_language?: string;
   ai_status?: AiStatus;
   justification?: string;
 }

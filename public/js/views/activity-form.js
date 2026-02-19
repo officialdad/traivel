@@ -75,7 +75,6 @@ export async function renderActivityForm(container, dayId, activityId) {
     }
   }
 
-  const sortOrder = v('sort_order') !== '' ? v('sort_order') : suggestedSortOrder;
   const displayStartTime = startTime || suggestedStartTime;
 
   const catOptions = CATEGORIES.map(
@@ -136,18 +135,13 @@ export async function renderActivityForm(container, dayId, activityId) {
           </label>
         </div>
 
-        <div class="grid">
-          <label><i class="fa-solid fa-tags"></i> Category
-            <select name="category">${catOptions}</select>
-          </label>
-          <label><i class="fa-solid fa-sort"></i> Sort Order
-            <input type="number" name="sort_order" min="0" value="${sortOrder}" />
-          </label>
-        </div>
+        <label><i class="fa-solid fa-tags"></i> Category
+          <select name="category">${catOptions}</select>
+        </label>
 
         <label>Notes
           <textarea name="notes" rows="2" placeholder="Tips, warnings, booking info...">${esc(v('notes'))}</textarea>
-          <small>Supports markdown formatting</small>
+          <small>Supports **bold**, *italic*, - lists, and [links](url)</small>
         </label>
       </fieldset>
 
@@ -229,6 +223,11 @@ export async function renderActivityForm(container, dayId, activityId) {
     }
 
     data.reference_links = linkEditor.getValue();
+    if (!isEdit) {
+      data.sort_order = suggestedSortOrder;
+    } else if (activity && activity.sort_order != null) {
+      data.sort_order = activity.sort_order;
+    }
 
     try {
       if (isEdit) {

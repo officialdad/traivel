@@ -474,6 +474,17 @@ nav.app-nav [role="button"] {
   --pico-color: #fff;
 }
 
+/* Add buttons — green style */
+.btn-add {
+  --pico-color: #2e7d32;
+  --pico-border-color: #2e7d32;
+}
+
+.btn-add:hover {
+  --pico-background-color: #2e7d32;
+  --pico-color: #fff;
+}
+
 @media (prefers-color-scheme: dark) {
   .btn-delete {
     --pico-color: #ef9a9a;
@@ -482,6 +493,16 @@ nav.app-nav [role="button"] {
 
   .btn-delete:hover {
     --pico-background-color: #c62828;
+    --pico-color: #fff;
+  }
+
+  .btn-add {
+    --pico-color: #a5d6a7;
+    --pico-border-color: #a5d6a7;
+  }
+
+  .btn-add:hover {
+    --pico-background-color: #2e7d32;
     --pico-color: #fff;
   }
 }
@@ -607,6 +628,13 @@ input[readonly] {
 
 .text-right {
   text-align: right;
+}
+
+.myr-day-inline {
+  color: var(--pico-muted-color);
+  font-weight: 400;
+  font-size: 0.88em;
+  margin-left: 0.4rem;
 }
 
 .myr-day, .myr-total {

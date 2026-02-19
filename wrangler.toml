@@ -14,4 +14,4 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "traivel-db"
-database_id = "local"
+database_id = "4d1b7e8a-28e3-4694-a563-f2fcd43fd1c2"
